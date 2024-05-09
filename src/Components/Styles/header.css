@@ -1,0 +1,43 @@
+html, body{
+    margin: 0;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5%;
+    border: 1px solid black;
+    height: 50px;
+    background-color: rgba(89, 87, 87, 0.3);
+}
+
+.app{
+    font-size: xx-large;
+    font-weight: bold;
+}
+.user{
+    font-size: xx-large;
+    font-weight: bold;
+}
+.photo{
+    font-size: xx-large;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+.settings{
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    margin-left: 50px;
+    position: absolute;
+    background-color: rgba(89, 87, 87);
+    color: white;
+    z-index: 1;
+    font-weight: 100;
+    font-size:larger;
+    padding: 10px;
+
+}
