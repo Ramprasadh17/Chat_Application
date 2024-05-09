@@ -1,0 +1,184 @@
+.chat{
+    background-color: rgb(32,44,51);
+    height: 100vh;
+    width: 100vw;
+}
+
+.chat_box{
+    display: flex;
+    justify-content: space-around;
+    height: calc(100vh - 100px);
+    position: fixed;
+    width: 100vw;
+}
+.chat_list{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    font-size:xx-large;
+    font-weight: 700;
+    height: calc(100vh - 100px);
+    position: relative;
+
+}
+
+.chats_heading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+}
+.search{
+    display: flex;
+    align-items: center;
+    height: 80px;
+    border-radius: 5px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 40px;
+    flex-direction: column;
+    border: 1px solid black;
+
+
+}
+.search_box {
+    position: relative; /* Add this line */
+    display: flex;
+    align-items: center;
+    height: 80%;
+    width: 80%;
+    border-radius: 5px;
+    font-size: large;
+    border: 1px solid black;
+}
+
+.suggestions {
+    position: absolute; /* Add this line */
+    top: 19%; /* Position suggestions below the search box */
+    left: 10%; /* Align suggestions with the left edge of the search box */
+    display: flex;
+    width: 80%;
+    color: white;
+    background-color: rgb(0, 0, 0); /* Optionally, add a background color */
+    z-index: 1; /* Ensure suggestions appear above other content */
+}
+
+.friendlist{
+    display: flex;
+}
+.chat_field{
+    flex: 2;
+    display: flex;
+    font-size:xx-large;
+    font-weight: 700;
+    flex-direction: column;
+    height: calc(100vh - 100px);
+    position: relative;
+    border: 1px solid black;
+
+}
+
+.friendlist{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: rgb(74, 77, 79);
+
+}
+.friendName{
+    color: antiquewhite;
+    /* width: 100%; */
+    height: 100px;
+    padding-left: 30px;
+    backdrop-filter: brightness(100%) contrast(200%);
+    border-bottom: 1px solid black;
+}
+.contact_name{
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    border: 1px solid black;
+
+}
+.chat_ui_container{
+    flex: 1;
+    background-color:rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+}
+.chat_ui{
+    display: flex;
+    flex: 5;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+}
+
+/* .messages_container {
+    width: 100%;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+} */
+
+.message_note{
+    display: flex;
+    justify-content: center;
+}
+
+.msg_box{
+    display: flex;
+    justify-content: space-between;
+    height:fit-content ;
+    border: 1px solid black;
+
+}
+.msg_input{
+    flex: 18;
+    height: auto;
+    border: 1px solid black;
+}
+.msg_input > input{
+    width: 99.4%;
+    height: 8vh;
+    font-size: large;
+}
+.send_button{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+    background-color: whitesmoke;
+
+}
+/* .send_button > FontAwesomeIcon {
+    align-content: center;
+} */
+
+.chat_ui_container > ul{
+    list-style-type: none;
+    margin: 0;
+    margin-top: 30px;
+    padding-right: 30px;
+    margin-top: 5px;
+
+
+}
+.chat_ui_container > li{
+  margin: 0;
+  padding: 0;
+
+}
+
+.usermsg {
+    text-align: right;
+    padding:10px;
+}
+.friendmsg{
+    text-align: left;
+    padding:10px;
+
+}

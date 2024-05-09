@@ -1,0 +1,237 @@
+const messageSchema = new mongoose.Schema({
+  unique_code: String,
+  messages: [{ receiver: String, msg: [{ type: String }] }],
+});
+
+
+
+
+app.post("/chat/:userName", async (req, res) => {
+  const { msg, unique_code, receiver } = req.body;
+
+  console.log(25, receiver);
+  console.log(25, unique_code);
+
+  try {
+    let result;
+
+    // Check if the user_Id exists
+    const existingUser = await Message.findOne({ unique_code });
+
+    if (existingUser) {
+      // Check if a message with the given receiver and unique_code exists
+      const existingMessage = existingUser.messages.find(
+        (message) => message.receiver === receiver
+      );
+
+      if (existingMessage) {
+        // Update the message by pushing the new msg
+        result = await Message.findOneAndUpdate(
+          {
+            unique_code,
+            "messages.receiver": receiver,
+          },
+          { $push: { "messages.$.msg": msg } },
+          { new: true }
+        );
+      } else {
+        // Add a new message with the provided receiver, unique_code, and msg
+        result = await Message.findOneAndUpdate(
+          { unique_code },
+          { $push: { messages: { receiver, msg } } },
+          { upsert: true, new: true }
+        );
+      }
+    } else {
+      // If the user_Id doesn't exist, create a new document with the provided details
+      result = await Message.create(
+        {
+          unique_code,
+          messages: [{ receiver, msg }],
+        },
+        { upsert: true, new: true }
+      );
+    }
+
+    console.log("result:", result);
+    res.status(201).json({ message: "Message saved successfully" });
+    console.log(`From: ${unique_code} \nTo: ${receiver} \nMessage: ${msg}`);
+  } catch (error) {
+    console.error("Error saving message:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while saving the message" });
+  }
+});
+
+
+
+
+-------app.post("/chat/:userName", async (req, res) => {
+  try {
+    const { unique_code, receiver, msg } = req.body;
+
+    // Create a compound unique identifier for the message
+    const messageIdentifier = `${unique_code}_${receiver}`;
+    console.log(messageIdentifier);
+
+    // Check if a message with the given identifier already exists
+    const existingMessage = await Message.findOne({
+      unique_code: messageIdentifier,
+    });
+
+    if (existingMessage) {
+      // If message already exists, update it by pushing the new message
+      existingMessage.messages.push({ receiver, msg });
+      await existingMessage.save();
+      console.log(`Message updated: ${existingMessage}`);
+      res.status(200).json({ message: "Message updated successfully" });
+    } else {
+      // If message doesn't exist, create a new one
+      const newMessage = new Message({
+        unique_code: messageIdentifier,
+        messages: [{ receiver, msg }],
+      });
+      await newMessage.save();
+      console.log(`New message saved: ${newMessage}`);
+      res.status(201).json({ message: "New message saved successfully" });
+    }
+  } catch (error) {
+    console.error("Error saving or updating message:", error);
+    res.status(500).json({
+      error: "An error occurred while saving or updating the message",
+    });
+  }
+});
+
+
+----------app.get----for messages
+app.get("/chat/:senderId/:recipientId", async (req, res) => {
+  const { senderId, recipientId } = req.params;
+
+  console.log(125, senderId, recipientId);
+  try {
+    // Find the messages for the specified user and friend
+    const userMessages = await Message.findOne({
+      sender: senderId,
+      "messages.recipient": recipientId,
+    });
+
+    // If userMessages is null or undefined, it means there are no messages for the user and friend
+    if (!userMessages) {
+      return res
+        .status(404)
+        .json({ error: "No messages found for the user and friend" });
+    }
+
+    // Filter the messages to get messages only for the specified friend_id
+    const messagesForFriend = userMessages.messages.filter(
+      (message) => message.recipient == recipientId
+    );
+
+    // Return the messages associated with the user and friend
+    res.status(200).json({ messages: messagesForFriend });
+    console.log(29, messagesForFriend);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching messages" });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+app.get("/chat/:senderId/:recipientId", async (req, res) => {
+  const { senderId, recipientId } = req.params;
+
+  console.log(125, senderId, recipientId);
+  let messages = [];
+
+  try {
+    const senderMessages = await Message.findOne({
+      sender: senderId,
+    });
+    const recepientMessages = await Message.findOne({
+      sender: recipientId,
+    });
+
+    console.log("beforefilteredsenderMessages :", senderMessages);
+    console.log("beforefilteredrecepientMessages :", recepientMessages);
+
+    if (senderMessages && !recepientMessages) {
+      const filteredsenderMessages = senderMessages.messages.filter(
+        (message) => message.recipient == recipientId
+      );
+      console.log("filteredsenderMessages : ", filteredsenderMessages);
+      if (recepientMessages) {
+        const filteredrecepientMessages = recepientMessages.messages.filter(
+          (message) => message.recipient == senderId
+        );
+        console.log("filteredrecepientMessages : ", filteredrecepientMessages);
+
+        messages = filteredsenderMessages[0].msg.concat(
+          filteredrecepientMessages[0].msg
+        );
+        res.status(200).json({ messages });
+        console.log(281, messages);
+        if (!senderMessages) {
+          messages = filteredrecepientMessages[0].msg;
+          res.status(200).json({ messages });
+          console.log(281, messages);
+        }
+      } else {
+        messages = filteredsenderMessages[0].msg;
+        res.status(200).json({ messages });
+        console.log(281, messages);
+      }
+    }
+
+    if (!senderMessages && !recepientMessages) {
+      return res.status(404).json({ error: "No messages found" });
+    }
+
+    // Sort the messages by timestamp
+    // allMessages.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching messages" });
+  }
+});
+
+
+
+
+---concat---
+ if (senderMessages && recepientMessages) {
+      const filteredsenderMessages = senderMessages.messages.filter(
+        (message) => message.recipient == recipientId
+      );
+      console.log("filteredsenderMessages : ", filteredsenderMessages);
+      const filteredrecepientMessages = recepientMessages.messages.filter(
+        (message) => message.recipient == senderId
+      );
+      console.log("filteredrecepientMessages : ", filteredrecepientMessages);
+      messages = filteredsenderMessages[0].msg.concat(
+        filteredrecepientMessages[0].msg
+      );
+      const allMessages = messages.sort(
+        (a, b) => new Date(a.datetime) - new Date(b.datetime)
+      );
+      res.status(200).json({ allMessages });
+      console.log(281, allMessages);
+    }
+
+
+
+
+   

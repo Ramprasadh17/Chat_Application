@@ -1,0 +1,193 @@
+<div>
+                  <h2>Chat with {connectedFriend.name}</h2>
+                  {sentmsg.map((message, index) => (
+                    <div key={index}>
+                      <ul>
+                        {message.map((msg, msgIndex) => (
+                          <li key={msgIndex}>{msg}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+
+
+                /////
+   // const sendMessage = async () => {
+  //   const chatUrl = `http://localhost:9000/chat/${userId}/${friend_id}`;
+
+  //   try {
+  //     // Try to send a HEAD request to check if the chat exists
+  //     await axios.head(chatUrl);
+
+  //     // If the request is successful, the chat already exists
+  //     await axios.post(chatUrl, { msg: message.msg }).then((response) => {
+  //       console.log(response.data);
+  //       alert("Message sent successfully!");
+  //       console.log("userId:", userId);
+  //       setMessage({ msg: "" });
+  //       fetchMessages(); // Fetch messages after sending the message
+  //     });
+  //   } catch (error) {
+  //     // If the chat does not exist, create a new one and then send the message
+  //     if (error.response && error.response.status === 404) {
+  //       await axios
+  //         .post(chatUrl, { messages: [{ msg: message.msg }] })
+  //         .then((response) => {
+  //           console.log(response.data);
+  //           alert("Message sent successfully!");
+  //           console.log("userId:", userId);
+  //           setMessage({ msg: "" });
+  //           fetchMessages(); // Fetch messages after sending the message
+  //         });
+  //     } else {
+  //       // Handle other errors
+  //       console.error("Error sending message:", error);
+  //     }
+  //   }
+  // };
+
+
+
+  ----------backend-------------// const messageSchema = new mongoose.Schema({
+//   userId: String,
+//   messages: [{ friend_id: String, msg: [{ type: String }] }],
+// });
+
+// const Message = mongoose.model("Message", messageSchema);
+
+// app.post("/chat/:userId/:friend_id", async (req, res) => {
+//   const { msg } = req.body;
+//   const { userId, friend_id } = req.params;
+
+//   console.log("userId:", userId);
+//   console.log("friend_id:", friend_id);
+
+//   try {
+//     let result;
+
+//     // Find if the friend_id already exists for the given userId
+//     const existingMessage = await Message.findOne({
+//       userId,
+//       "messages.friend_id": friend_id,
+//     });
+
+//     if (existingMessage) {
+//       // Update the msg for the existing friend_id
+//       result = await Message.findOneAndUpdate(
+//         { userId, "messages.friend_id": friend_id },
+//         { $push: { "messages.$.msg": msg } },
+//         { new: true }
+//       );
+//     } else {
+//       // Add the friend_id with the initial msg
+//       result = await Message.findOneAndUpdate(
+//         { userId },
+//         { $push: { messages: { friend_id, msg } } },
+//         { upsert: true, new: true }
+//       );
+//     }
+
+//     console.log("result:", result);
+//     res.status(201).json({ message: "Message saved successfully" });
+//     console.log(`From: ${userId} \nTo: ${friend_id} \nMessage: ${msg}`);
+//   } catch (error) {
+//     console.error("Error saving message:", error);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while saving the message" });
+//   }
+// });
+
+// app.get("/chat/:userId/:friend_id", async (req, res) => {
+//   const { userId, friend_id } = req.params;
+
+//   try {
+//     // Find the messages for the specified user and friend
+//     const userMessages = await Message.findOne({
+//       userId,
+//       "messages.friend_id": friend_id,
+//     });
+
+//     // If userMessages is null or undefined, it means there are no messages for the user and friend
+//     if (!userMessages) {
+//       return res
+//         .status(404)
+//         .json({ error: "No messages found for the user and friend" });
+//     }
+
+//     // Filter the messages to get messages only for the specified friend_id
+//     const messagesForFriend = userMessages.messages.filter(
+//       (message) => message.friend_id === friend_id
+//     );
+
+//     // Return the messages associated with the user and friend
+//     res.status(200).json({ messages: messagesForFriend });
+//     console.log(messagesForFriend);
+//   } catch (error) {
+//     console.error("Error fetching messages:", error);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while fetching messages" });
+//   }
+// });
+
+
+-----get----
+// app.get("/chat/:unique_code/:receiver_id", async (req, res) => {
+//   const { unique_code, receiver_id } = req.params;
+
+//   try {
+//     // Retrieve messages for the specified user and friend
+//     const userMessages = await Message.findOne({ unique_code, receiver_id });
+
+//     if (!userMessages) {
+//       return res
+//         .status(404)
+//         .json({ error: "No messages found for the user and friend" });
+//     }
+
+//     res.status(200).json({ messages: userMessages.messages });
+//     console.log(userMessages.messages);
+//   } catch (error) {
+//     console.error("Error fetching messages:", error);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while fetching messages" });
+//   }
+// });
+
+
+-----image---
+const [image, setImage] = useState([]);
+
+  const handleFileChange = (event) => {
+    console.log(event.target.files);
+    // const dp = event.target.files[0];
+    // console.log(dp);
+    setImage(event.target.files);
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    console.log(image);
+    const formData = new FormData();
+    formData.append("image", image);
+    console.log(formData.get("image"));
+
+    await axios
+      .post(`http://localhost:9000/${userId}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+
